@@ -1,16 +1,51 @@
-# credit_card_manager
+<h1
+  style="display: flex; align-items: center; justify-content: center"
+>
+  💳 Credit Card Manager
+</h1>
 
-A new Flutter project.
+<h2
+  style="display: flex; align-items: center; justify-content: center"
+>
+  <img src="./examples/flutter-logo.png" height="35" style="margin-right: 10px" />
+  A simple credit card manager with flutter
+</h2>
 
-## Getting Started
+<div
+  style="margin-top: 40px; display: flex; align-items: center; justify-content: center"
+>
+  <img src="./examples/left.png" height="500" style="margin-right: 20px" />
+  <img src="./examples/right.png" height="500" />
+</div>
 
-This project is a starting point for a Flutter application.
+<h1></h1>
 
-A few resources to get you started if this is your first Flutter project:
+## Used packages
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+1. ✨ mccounting_text
+2. ✨ smooth_page_indicator
+3. ✨ sliding_sheet
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## How to run
+
+1. First clone the repo:
+
+```bash
+git clone https://github.com/KauaLimaMartins/Credit-card-manager.git
+```
+
+<br />
+
+2. In the repo path:
+
+```bash
+flutter pub get
+```
+
+<br />
+
+3. And finally:
+
+```bash
+flutter run
+```
