@@ -1,20 +1,22 @@
-<h1
-  style="display: flex; align-items: center; justify-content: center"
->
+<h1 align="center">
   💳 Credit Card Manager
 </h1>
 
-<h2
-  style="display: flex; align-items: center; justify-content: center"
->
-  <img src="./examples/flutter-logo.png" height="35" style="margin-right: 10px" />
+<h2 align="center">
   A simple credit card manager with flutter
+  <br />
+  <br />
+  <img src="./examples/flutter-logo.png" height="60" />
 </h2>
 
 <div
-  style="margin-top: 40px; display: flex; align-items: center; justify-content: center"
+  align="center"
 >
-  <img src="./examples/left.png" height="500" style="margin-right: 20px" />
+  <img
+    src="./examples/left.png"
+    height="500"
+    style="margin-right: 20px"
+  />
   <img src="./examples/right.png" height="500" />
 </div>
 
