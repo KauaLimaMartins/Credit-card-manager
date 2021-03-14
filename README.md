@@ -27,6 +27,8 @@
 1. ✨ mccounting_text
 2. ✨ smooth_page_indicator
 3. ✨ sliding_sheet
+4. ✨ provider
+5. ✨ simple_animations
 
 ## How to run
 

@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:credit_card_manager/models/credit_card.dart';
 import 'package:credit_card_manager/screens/details/details_screen.dart';
+import 'package:credit_card_manager/screens/home/notifiers/screen_notifier.dart';
 import 'package:credit_card_manager/screens/home/widgets/balance_widget.dart';
 import 'package:credit_card_manager/screens/home/widgets/home_header_widget.dart';
 import 'package:credit_card_manager/size_config.dart';
 import 'package:credit_card_manager/widgets/card/front_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  PageController pageController = PageController(viewportFraction: 0.55);
+  ScreenNotifier _screenNotifier = ScreenNotifier();
 
   int _previousIndex = 0;
   int _currentIndex = 0;
@@ -41,17 +43,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HomeHeaderWidget(),
-            BalanceWidget(
-              previousIndex: _previousIndex,
-              currentIndex: _currentIndex,
-            ),
-            _buildCardsList(),
-            _buildPageIndicator(),
-          ],
+        child: ChangeNotifierProvider(
+          create: (_) => _screenNotifier,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HomeHeaderWidget(),
+              BalanceWidget(
+                previousIndex: _previousIndex,
+                currentIndex: _currentIndex,
+              ),
+              _buildCardsList(),
+              _buildPageIndicator(),
+            ],
+          ),
         ),
       ),
     );
@@ -66,28 +71,53 @@ class _HomeScreenState extends State<HomeScreen> {
         alignment: Alignment.center,
         child: PageView.builder(
           scrollDirection: Axis.vertical,
-          controller: this.pageController,
+          controller: this._screenNotifier.pageController,
           onPageChanged: (index) => setState(() {
             this._previousIndex = this._currentIndex;
             this._currentIndex = index;
           }),
           itemCount: cards.length,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailsScreen(
-                      card: cards[index],
-                    ),
-                  ),
-                );
+            return Consumer<ScreenNotifier>(
+              builder: (context, value, child) {
+                if (value.currentPage > index) {
+                  double scaleFactor = max(
+                    1 - (value.currentPage - index) * 0.4,
+                    0.6,
+                  );
+                  double angleFactor = min(
+                    (value.currentPage - index) * 5,
+                    5,
+                  );
+                  return Transform(
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..scale(scaleFactor)
+                      ..rotateZ(-(pi / 180) * angleFactor),
+                    alignment: Alignment.center,
+                    child: child,
+                  );
+                }
+
+                return child;
               },
-              child: Container(
-                padding: EdgeInsets.only(bottom: SizeConfig.defaultHeight * 5),
-                child: FrontCardWidget(
-                  card: cards[index],
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailsScreen(
+                        card: cards[index],
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding:
+                      EdgeInsets.only(bottom: SizeConfig.defaultHeight * 5),
+                  child: FrontCardWidget(
+                    card: cards[index],
+                  ),
                 ),
               ),
             );
@@ -104,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
         vertical: SizeConfig.defaultHeight * 2,
       ),
       child: SmoothPageIndicator(
-        controller: this.pageController,
+        controller: this._screenNotifier.pageController,
         count: cards.length,
         effect: WormEffect(
           dotHeight: SizeConfig.defaultHeight,

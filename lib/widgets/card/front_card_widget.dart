@@ -4,11 +4,19 @@ import 'package:credit_card_manager/models/credit_card.dart';
 import 'package:credit_card_manager/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class FrontCardWidget extends StatelessWidget {
-  const FrontCardWidget({Key key, @required this.card}) : super(key: key);
+  const FrontCardWidget({
+    Key key,
+    @required this.card,
+    this.showCardNumber = false,
+    this.animateCardNumber = true,
+  }) : super(key: key);
 
   final CreditCard card;
+  final bool showCardNumber;
+  final bool animateCardNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +81,27 @@ class FrontCardWidget extends StatelessWidget {
                     ),
                   ),
                   Spacer(),
-                  Text(
-                    card.number,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        .copyWith(color: Colors.white),
-                  ),
+                  if (showCardNumber)
+                    PlayAnimation(
+                      tween: IntTween(begin: 0, end: card.number.length),
+                      delay: Duration(
+                        milliseconds: 200,
+                      ),
+                      duration: Duration(
+                        milliseconds: 600,
+                      ),
+                      builder: (context, child, value) {
+                        return Text(
+                          animateCardNumber
+                              ? card.number.substring(0, value)
+                              : card.number,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6
+                              .copyWith(color: Colors.white),
+                        );
+                      },
+                    )
                 ],
               ),
             ),
