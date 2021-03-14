@@ -19,6 +19,8 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+  double sheetProgress = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,15 +49,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          _buildHeader(),
+          _buildHeader(sheetProgress),
           Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.defaultWidth * 2,
+            padding: EdgeInsets.fromLTRB(
+              SizeConfig.defaultWidth * 2,
+              0,
+              SizeConfig.defaultWidth * 2,
+              sheetProgress > 0.462
+                  ? SizeConfig.defaultHeight * 55
+                  : SizeConfig.defaultHeight * 20 + sheetProgress * 600,
             ),
             alignment: Alignment.center,
-            child: FlippableWidget(
-              backCardWidget: BackCardWidget(card: widget.card),
-              frontCardWidget: FrontCardWidget(card: widget.card),
+            child: Transform.scale(
+              scale: sheetProgress > 0.462 ? 1 - (sheetProgress - 0.462) : 1,
+              child: FlippableWidget(
+                backCardWidget: BackCardWidget(card: widget.card),
+                frontCardWidget: FrontCardWidget(card: widget.card),
+              ),
             ),
           ),
           _buildBottomSheet(),
@@ -64,27 +74,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(double sheetProgress) {
     return Align(
       alignment: Alignment.center,
-      child: Column(
-        children: [
-          Text(
-            'Full Card',
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                .copyWith(color: Colors.white),
-          ),
-          SizedBox(height: SizeConfig.defaultHeight * 1.5),
-          Text(
-            'Rotate card to view the security code',
-            style: Theme.of(context)
-                .textTheme
-                .subtitle2
-                .copyWith(color: Colors.white60),
-          ),
-        ],
+      child: Transform.scale(
+        scale: 1 - (sheetProgress * 20),
+        alignment: Alignment.topCenter,
+        child: Column(
+          children: [
+            Text(
+              'Full Card',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  .copyWith(color: Colors.white),
+            ),
+            SizedBox(height: SizeConfig.defaultHeight * 1.5),
+            Text(
+              'Rotate card to view the security code',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  .copyWith(color: Colors.white60),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -100,6 +114,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
           snappings: [0.3, 0.6, 1],
           positioning: SnapPositioning.relativeToAvailableSpace,
         ),
+        listener: (state) {
+          setState(() {
+            sheetProgress = ((state.extent - 0.3) / 0.65);
+          });
+        },
         headerBuilder: (context, state) {
           return Container(
             padding: EdgeInsets.symmetric(
